@@ -9,15 +9,7 @@ bot = commands.Bot(command_prefix='=')
 
 @bot.event
 async def on_ready():
-    print(f'{bot.user} has connected to Discord!')
-
-@bot.command()
-async def echo(ctx, *args):
-    print("PING")
-    out = ""
-    for word in args:
-        out += word + " "
-    await ctx.send(out)
+    print("has connected to Discord!')
 
 level_count = """
     query {
