@@ -2,6 +2,8 @@ import discord
 import env
 from discord.ext import commands
 from python_graphql_client import GraphqlClient
+ 
+import graphql_query as q
 
 
 graphql = GraphqlClient(endpoint="https://yacy.org/graphql")
@@ -11,30 +13,16 @@ bot = commands.Bot(command_prefix='=')
 async def on_ready():
     print("\n\nBot has connected to Discord!\n")
 
-level_count = """
-    query {
-        levelCount
-    }
-"""
 @bot.command()
 async def levels(ctx):
-    data = graphql.execute(query=level_count)
+    data = graphql.execute(query=q.level_count)
     await ctx.send("CY Levels: " + str(data["data"]["levelCount"]))
 
-
-
-graphql_search = """
-    query searchLevels($query: String, $page: Int, $pageSize: Int) {
-        searchLevels(query:$query, page:$page, pageSize:$pageSize) {
-            title, author, plays
-        } 
-    }
-"""
 @bot.command()
 async def search(ctx, *args):
     term = " ".join(args)
     variables = {"query": term, "page": 1, "pageSize": 10}
-    data = graphql.execute(query=graphql_search, variables=variables)
+    data = graphql.execute(query=q.search_levels, variables=variables)
 
     output = discord.Embed(title="Search Results")
     for level in data["data"]["searchLevels"]:
