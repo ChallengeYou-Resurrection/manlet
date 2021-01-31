@@ -9,7 +9,7 @@ bot = commands.Bot(command_prefix='=')
 
 @bot.event
 async def on_ready():
-    print("has connected to Discord!')
+    print("\n\nBot has connected to Discord!\n")
 
 level_count = """
     query {
@@ -19,22 +19,26 @@ level_count = """
 @bot.command()
 async def levels(ctx):
     data = graphql.execute(query=level_count)
-    await ctx.send("CY Levels: " + str(data["data"]["levelCount"]));
+    await ctx.send("CY Levels: " + str(data["data"]["levelCount"]))
 
-'''
-query = """
-    query countryQuery($countryCode: String) {
-        country(code:$countryCode) {
-            code
-            name
-        }
+
+
+graphql_search = """
+    query searchLevels($query: String, $page: Int, $pageSize: Int) {
+        searchLevels(query:$query, page:$page, pageSize:$pageSize) {
+            title, author, plays
+        } 
     }
 """
-variables = {"countryCode": "CA"}
-
-# Synchronous request
-data = client.execute(query=query, variables=variables)
-'''
-
+@bot.command()
+async def search(ctx, *args):
+    term = " ".join(args)
+    print(term)
+    variables = {"query": term, "page": 1, "pageSize": 10}
+    data = graphql.execute(query=graphql_search, variables=variables)
+    output = ""
+    for level in data["data"]["searchLevels"]:
+        output += "Title: " + level["title"] + "\n Author: " + level["author"] + "\nPlays: " + str(level["plays"]) + "\n\n"
+    await ctx.send(output)
 
 bot.run(env.DISCORD_TOKEN)
