@@ -11,7 +11,12 @@ bot = commands.Bot(command_prefix='=')
 
 @bot.event
 async def on_ready():
+    await bot.change_presence(activity=discord.Game(name="Type =help"))
     print("\n\nBot has connected to Discord!\n")
+
+@bot.command()
+async def source(ctx):
+    await ctx.send("https://github.com/ChallengeYou-Resurrection/manlet")
 
 @bot.command()
 async def levels(ctx):
