@@ -37,4 +37,17 @@ async def search(ctx, *args):
         output.add_field(name=title + " by " + author, value="Plays: " + plays)
     await ctx.send(embed=output)
 
+@bot.command()
+async def level(ctx, game_number):
+    variables = {"gameNumber": int(game_number)}
+    data = graphql.execute(query=q.get_level, variables=variables)
+
+    output = discord.Embed(title="Level" + str(game_number))
+    level = data["data"]["getLevel"]
+    title  = level["title"]
+    author = level["author"]
+    plays  = str(level["plays"])
+    output.add_field(name=title + " by " + author, value="Plays: " + plays)
+    await ctx.send(embed=output)
+
 bot.run(env.DISCORD_TOKEN)

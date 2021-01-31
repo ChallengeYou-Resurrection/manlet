@@ -12,3 +12,11 @@ search_levels = """
         } 
     }
 """
+
+get_level = """
+    query getLevel($gameNumber: Int) {
+            getLevel(gameNumber:$gameNumber) {
+                title, author, plays
+        }
+    }
+"""
