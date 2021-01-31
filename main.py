@@ -33,12 +33,15 @@ graphql_search = """
 @bot.command()
 async def search(ctx, *args):
     term = " ".join(args)
-    print(term)
     variables = {"query": term, "page": 1, "pageSize": 10}
     data = graphql.execute(query=graphql_search, variables=variables)
-    output = ""
+
+    output = discord.Embed(title="Search Results")
     for level in data["data"]["searchLevels"]:
-        output += "Title: " + level["title"] + "\n Author: " + level["author"] + "\nPlays: " + str(level["plays"]) + "\n\n"
-    await ctx.send(output)
+        title  = level["title"]
+        author = level["author"]
+        plays  = str(level["plays"])
+        output.add_field(name=title + " by " + author, value="Plays: " + plays)
+    await ctx.send(embed=output)
 
 bot.run(env.DISCORD_TOKEN)
